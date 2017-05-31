@@ -27,7 +27,7 @@ pygame.init()
 main = True
 
 screen = pygame.display.set_mode([screenX, screenY])
-backdrop = pygame.image.load(os.path.join('image','stage.png')).convert()
+backdrop = pygame.image.load(os.path.join('images','stage.png')).convert()
 backdropRect = screen.get_rect()
 
 '''MAIN LOOP'''
