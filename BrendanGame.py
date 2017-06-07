@@ -7,12 +7,15 @@ import sys # help python identify
 '''OBJECTS'''
 # put classes & functions here
 
-
-
-
-
-
-
+class Player(pygame.sprite.Sprite):
+    #spawn player
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.images = [ ]
+        img = pygame.image.load(os.path.join('images', 'hero.png')).convert
+        self.images.append(img)
+        self.images = self.images[0]
+        self.rect = self.image.get_rect()
 
 '''SETUP'''
 # code runs once
@@ -30,6 +33,12 @@ screen = pygame.display.set_mode([screenX, screenY])
 backdrop = pygame.image.load(os.path.join('images','stage.png')).convert()
 backdropRect = screen.get_rect()
 
+player = Player() #spawn player
+play.rect.x = 0
+play.rect.y = 0
+movingsprites = pygame.script.Group()
+movingsprits.add(player)
+  
 '''MAIN LOOP'''
 # code runs many times
 while main == True:
