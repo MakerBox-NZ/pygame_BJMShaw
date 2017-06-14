@@ -12,9 +12,9 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.images = [ ]
-        img = pygame.image.load(os.path.join('images', 'hero.png')).convert
+        img = pygame.image.load(os.path.join('images', 'hero.png')).convert ()
         self.images.append(img)
-        self.images = self.images[0]
+        self.image = self.images[0]
         self.rect = self.image.get_rect()
 
 '''SETUP'''
@@ -34,10 +34,10 @@ backdrop = pygame.image.load(os.path.join('images','stage.png')).convert()
 backdropRect = screen.get_rect()
 
 player = Player() #spawn player
-play.rect.x = 0
-play.rect.y = 0
-movingsprites = pygame.script.Group()
-movingsprits.add(player)
+player.rect.x = 0
+player.rect.y = 0
+movingsprites = pygame.sprite.Group()
+movingsprites.add(player)
   
 '''MAIN LOOP'''
 # code runs many times
