@@ -16,11 +16,18 @@ class Player(pygame.sprite.Sprite):
         self.images.append(img)
         self.image = self.images[0]
         self.rect = self.image.get_rect()
+        self.image.convert_alpha() #opimise for alpha
+        self.image.set_colorkey(alpha) # set alpha
+
 
 '''SETUP'''
 # code runs once
 screenX = 960 #width
 screenY = 720 #height
+
+alpha = (0, 0, 0)
+black = (1, 1, 1)
+white = (255, 255, 255)
 
 fps = 60 #frame rate
 afps = 4 #animation cycles
@@ -49,7 +56,24 @@ while main == True:
                 sys.exit()
                 main = False
                 
+            if event.key == pygame.K_LEFT:
+                print('left stop')
+            if event.key == pygame.K_RIGHT:
+                print('right stop')
+            if event.key == pygame.K_UP:
+                print('up stop')
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                print('left')
+            if event.key == pygame.K_RIGHT:
+                print('right')
+            if event.key == pygame.K_UP:
+                print('up')
+                
     screen.blit(backdrop, backdropRect)
+
+    movingsprites.draw(screen) #draw player
 
     pygame.display.flip()
     clock.tick(fps)
