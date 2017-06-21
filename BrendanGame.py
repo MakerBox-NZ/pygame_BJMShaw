@@ -31,11 +31,11 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         #update sprite position
         currentX = self.rect.x
-        nextX = current + self.momentumX
+        nextX = currentX + self.momentumX
         self.rect.x = nextX
 
         currentY = self.rect.y
-        nextY = current + self.momentumY
+        nextY = currentY + self.momentumY
         self.rect.y = nextY
 
 '''SETUP'''
