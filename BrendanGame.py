@@ -11,6 +11,10 @@ class Player(pygame.sprite.Sprite):
     #spawn player
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
+
+        self.momentumX = 0 #move along X
+        self.momentumY = 0 #move along Y
+        
         self.images = [ ]
         img = pygame.image.load(os.path.join('images', 'hero.png')).convert ()
         self.images.append(img)
@@ -19,6 +23,20 @@ class Player(pygame.sprite.Sprite):
         self.image.convert_alpha() #opimise for alpha
         self.image.set_colorkey(alpha) # set alpha
 
+    def control(self, x, y):
+        #control player movement
+        self.momentumX += x
+        self.momentumY += y
+
+    def update(self):
+        #update sprite position
+        currentX = self.rect.x
+        nextX = current + self.momentumX
+        self.rect.x = nextX
+
+        currentY = self.rect.y
+        nextY = current + self.momentumY
+        self.rect.y = nextY
 
 '''SETUP'''
 # code runs once
@@ -45,6 +63,7 @@ player.rect.x = 0
 player.rect.y = 0
 movingsprites = pygame.sprite.Group()
 movingsprites.add(player)
+movesteps = 10 #how fast to move
   
 '''MAIN LOOP'''
 # code runs many times
@@ -58,21 +77,26 @@ while main == True:
                 
             if event.key == pygame.K_LEFT:
                 print('left stop')
+                player.control(movesteps, 0)
             if event.key == pygame.K_RIGHT:
                 print('right stop')
+                player.control(-movesteps, 0)
             if event.key == pygame.K_UP:
                 print('up stop')
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 print('left')
+                player.control(-movesteps, 0)
             if event.key == pygame.K_RIGHT:
                 print('right')
+                player.control(movesteps, 0)
             if event.key == pygame.K_UP:
                 print('up')
                 
     screen.blit(backdrop, backdropRect)
 
+    player.update() #update player postion
     movingsprites.draw(screen) #draw player
 
     pygame.display.flip()
