@@ -60,7 +60,7 @@ backdropRect = screen.get_rect()
 
 player = Player() #spawn player
 player.rect.x = 0
-player.rect.y = 0
+player.rect.y = 90
 movingsprites = pygame.sprite.Group()
 movingsprites.add(player)
 movesteps = 10 #how fast to move
