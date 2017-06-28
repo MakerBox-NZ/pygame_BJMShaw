@@ -38,6 +38,31 @@ class Player(pygame.sprite.Sprite):
         nextY = currentY + self.momentumY
         self.rect.y = nextY
 
+
+
+class Enemy(pygame.sprite.Sprite):
+    #spawn an enemy
+    def __init__(self,x,y,img):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(os.path.join('image', img))
+        self.image.convert_alpha()
+        self.image.set_colorkey(alpha)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.counter = 0 #counter variable
+
+    def move(self):
+        #enemy movement
+        if self.counter >= 0 and self.counter <= 30:
+            self.rect.x += 2
+        elif self.counter >= 30 and self.counter <= 60:
+            self.rect.x -= 2
+        else:
+            self.counter = 0
+            print('reset')
+
+        self.counter += 1
 '''SETUP'''
 # code runs once
 screenX = 960 #width
@@ -64,7 +89,12 @@ player.rect.y = 90
 movingsprites = pygame.sprite.Group()
 movingsprites.add(player)
 movesteps = 10 #how fast to move
-  
+
+#enemy code
+enemy = Enemy(100,50, 'enemy.png') #spawn enemy
+enemy_list = pygame.sprite.Group() #create enemy group
+enemy_list.add(enemy) #add enemy to group
+
 '''MAIN LOOP'''
 # code runs many times
 while main == True:
@@ -99,10 +129,8 @@ while main == True:
     player.update() #update player postion
     movingsprites.draw(screen) #draw player
 
+    enemy_list.draw(screen) #refresh enemies
+    enemy.move() # move enemy sprite
+    
     pygame.display.flip()
     clock.tick(fps)
-
-
-
-
-
