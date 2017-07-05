@@ -44,7 +44,7 @@ class Enemy(pygame.sprite.Sprite):
     #spawn an enemy
     def __init__(self,x,y,img):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join('image', img))
+        self.image = pygame.image.load(os.path.join('images', img))
         self.image.convert_alpha()
         self.image.set_colorkey(alpha)
         self.rect = self.image.get_rect()
