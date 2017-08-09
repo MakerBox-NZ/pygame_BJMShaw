@@ -15,6 +15,10 @@ class Player(pygame.sprite.Sprite):
         self.momentumX = 0 #move along X
         self.momentumY = 0 #move along Y
 
+        #gravity varibles
+        self.collide_delta = 0
+        self.jump_delta = 6
+
         self.score = 0 #set score
         
         self.images = [ ]
@@ -40,6 +44,14 @@ class Player(pygame.sprite.Sprite):
         nextY = currentY + self.momentumY
         self.rect.y = nextY
 
+        #gravity
+        if self.collide_delta < 6 and self.jump_delta < 6:
+            self.jump_delta = 6*2
+            self.momentumY -=33 #how high to jump
+
+            self.collide_delta +=6
+            self.jump_delta += 6
+
         #collistions
         enemy_hit_list = pygame.sprite.spritecollide(self, enemy_list, False)
         for enemy in enemy_hit_list:
@@ -52,11 +64,16 @@ class Player(pygame.sprite.Sprite):
                 self.rect.y = currentY
                 self.rect.x = currentX+9
                 self.momentumY = 0
+                self.collide_delt = 0 #stop jumping
 
         if self.momentumY > 0:
             for block in block_hit_list:
                 self.rect.y = currentY
                 self.momentumY = 0
+                self.collide_delt = 0 #stop jumping
+
+    def jump (self, platform_list):
+        self.jump_delta = 0
         
     def gravity(self):
         self.momentumY += 3.2 #how fast player falls
@@ -145,9 +162,9 @@ movesteps = 10 #how fast to move
 enemy = Enemy(200,95, 'enemy.png') #spawn enemy
 enemy_list = pygame.sprite.Group() #create enemy group
 enemy_list.add(enemy) #add enemy to group
-enemy = Enemy(500,250, 'enemy2.png') #spawn enemy
+'''enemy = Enemy(500,250, 'enemy2.png') #spawn enemy
 enemy_list = pygame.sprite.Group() #create enemy group
-enemy_list.add(enemy) #add enemy to group
+enemy_list.add(enemy) #add enemy to group'''
 
 '''MAIN LOOP'''
 # code runs many times
