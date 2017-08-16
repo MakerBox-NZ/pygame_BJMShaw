@@ -64,23 +64,25 @@ class Player(pygame.sprite.Sprite):
                 self.rect.y = currentY
                 self.rect.x = currentX+9
                 self.momentumY = 0
-                self.collide_delt = 0 #stop jumping
+                self.collide_delta = 0 #stop jumping
 
         if self.momentumY > 0:
             for block in block_hit_list:
                 self.rect.y = currentY
                 self.momentumY = 0
-                self.collide_delt = 0 #stop jumping
+                self.collide_delta = 0 #stop jumping
 
     def jump (self, platform_list):
         self.jump_delta = 0
         
     def gravity(self):
+        #print('test')
         self.momentumY += 3.2 #how fast player falls
-
-        if self.rect.y > 100 and self.momentumY >= 0:
+        
+        if self.rect.y > screenY and self.momentumY >= 0:
             self.momentumY = 0
             self.rect.y = screenY-20
+            print('bug')
 
 class Enemy(pygame.sprite.Sprite):
     #spawn an enemy
@@ -124,7 +126,7 @@ class Platform (pygame.sprite.Sprite):
     def level1():
         #create level 1
         platform_list = pygame.sprite.Group()
-        block = Platform(0, 200, 10000, 118,os.path.join('images','block0.png'))
+        block = Platform(0, 200, 5000, 200,os.path.join('images','block0.png'))
         platform_list.add(block) #after each block
 
         return platform_list #at end of function level1
@@ -158,6 +160,9 @@ movingsprites = pygame.sprite.Group()
 movingsprites.add(player)
 movesteps = 10 #how fast to move
 
+forwardX = 600 #when to scroll
+backwardX = 150 #when to scroll
+
 #enemy code
 enemy = Enemy(200,95, 'enemy.png') #spawn enemy
 enemy_list = pygame.sprite.Group() #create enemy group
@@ -187,13 +192,17 @@ while main == True:
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                print('left')
+                #print('left')
                 player.control(-movesteps, 0)
             if event.key == pygame.K_RIGHT:
-                print('right')
+                #print('right')
                 player.control(movesteps, 0)
             if event.key == pygame.K_UP:
-                print('up')
+                #print('up')
+                player.jump(platform_list)
+
+    #scroll world forward
+    #if player.rect.x
                 
     screen.blit(backdrop, backdropRect)
 
