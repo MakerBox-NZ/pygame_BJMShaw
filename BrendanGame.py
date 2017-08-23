@@ -3,9 +3,15 @@
 import pygame # load pygame keywords
 import os # let python use your file system
 import sys # help python identify
+import pygame.freetype#load fonts
 
 '''OBJECTS'''
 # put classes & functions here
+
+def stats(score):
+    #display text, 1, colo(u)r (rgb)
+    text_score = myfont.render('Sc0re: '+str(score), 1, (250,147,248))
+    screen.blit(text_score, (4, 4))
 
 class Player(pygame.sprite.Sprite):
     #spawn player
@@ -20,6 +26,7 @@ class Player(pygame.sprite.Sprite):
         self.jump_delta = 6
 
         self.score = 0 #set score
+        self.damage = 0#player is hit
         
         self.images = [ ]
         img = pygame.image.load(os.path.join('images', 'hero.png')).convert ()
@@ -54,9 +61,21 @@ class Player(pygame.sprite.Sprite):
 
         #collistions
         enemy_hit_list = pygame.sprite.spritecollide(self, enemy_list, False)
-        for enemy in enemy_hit_list:
+        '''for enemy in enemy_hit_list:
             self.score -= 1
-            print(self.score)
+            print(self.score)'''
+
+        if self.damage == 0:
+            for enemy in enemy_hit_list:
+                if not self.rect.contains(enemy):
+                    self.damage = self.rect.colliderect(enemy)
+                    print(self.score)
+
+        if self.damage == 1:
+            idx = self.rect.collidelist(enemy_hit_list)
+            if idx == -1:
+                self.damge = 0 #set damage back to 0
+                self.score -= 1#sudtract 1 hp
 
         block_hit_list = pygame.sprite.spritecollide(self, platform_list, False)
         if self.momentumX > 0:
@@ -144,7 +163,11 @@ fps = 60 #frame rate
 afps = 4 #animation cycles
 clock = pygame.time.Clock()
 pygame.init()
+pygame.font.init() #start free type
 
+font_path= os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts', 'Lemon.ttf')
+font_size = 64
+myfont = pygame.font.Font(font_path, font_size)
 main = True
 
 screen = pygame.display.set_mode([screenX, screenY])
@@ -192,13 +215,13 @@ while main == True:
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                #print('left')
+                print('left')
                 player.control(-movesteps, 0)
             if event.key == pygame.K_RIGHT:
-                #print('right')
+                print('right')
                 player.control(movesteps, 0)
             if event.key == pygame.K_UP:
-                #print('up')
+                print('up')
                 player.jump(platform_list)
 
     #scroll world forward
@@ -228,6 +251,8 @@ while main == True:
 
     enemy_list.draw(screen) #refresh enemies
     enemy.move() # move enemy sprite
+
+    stats(player.score) #draw text
     
     pygame.display.flip()
     clock.tick(fps)
