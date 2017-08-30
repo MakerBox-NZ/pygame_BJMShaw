@@ -4,6 +4,7 @@ import pygame # load pygame keywords
 import os # let python use your file system
 import sys # help python identify
 import pygame.freetype#load fonts
+import random #loot change louction
 
 '''OBJECTS'''
 # put classes & functions here
@@ -61,9 +62,13 @@ class Player(pygame.sprite.Sprite):
 
         #collistions
         enemy_hit_list = pygame.sprite.spritecollide(self, enemy_list, False)
-        '''for enemy in enemy_hit_list:
-            self.score -= 1
-            print(self.score)'''
+        loot_hit_list = pygame.sprite.spritecollide(self, loot_list, False)
+        for loot in loot_hit_list:
+            self.score += 1
+            print(self.score)
+            loot_list.remove(loot)
+            #cash = Platform(random.randint(0,1000), 100, 256, 256,os.path.join('images','loot.png'))
+            
 
         if self.damage == 0:
             for enemy in enemy_hit_list:
@@ -76,6 +81,8 @@ class Player(pygame.sprite.Sprite):
             if idx == -1:
                 self.damage = 0 #set damage back to 0
                 self.score -= 1#sudtract 1 hp
+
+        
 
         block_hit_list = pygame.sprite.spritecollide(self, platform_list, False)
         if self.momentumX > 0:
@@ -153,7 +160,7 @@ class Platform (pygame.sprite.Sprite):
     def loot1():
         #create loot 1
         loot_list = pygame.sprite.Group()
-        cash = Platform(100, 200, 256, 256,os.path.join('images','loot.png'))
+        cash = Platform(990, 150, 256, 256,os.path.join('images','loot.png'))
         loot_list.add(cash) #after each cash
 
         return loot_list #at end of function level1
