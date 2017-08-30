@@ -41,7 +41,7 @@ class Player(pygame.sprite.Sprite):
         self.momentumX += x
         self.momentumY += y
 
-    def update(self, enemy_list, platform_list):
+    def update(self, enemy_list, platform_list, loot_list):
         #update sprite position
         currentX = self.rect.x
         nextX = currentX + self.momentumX
@@ -74,7 +74,7 @@ class Player(pygame.sprite.Sprite):
         if self.damage == 1:
             idx = self.rect.collidelist(enemy_hit_list)
             if idx == -1:
-                self.damge = 0 #set damage back to 0
+                self.damage = 0 #set damage back to 0
                 self.score -= 1#sudtract 1 hp
 
         block_hit_list = pygame.sprite.spritecollide(self, platform_list, False)
@@ -145,10 +145,18 @@ class Platform (pygame.sprite.Sprite):
     def level1():
         #create level 1
         platform_list = pygame.sprite.Group()
-        block = Platform(0, 275, 5000, 200,os.path.join('images','block0.png'))
+        block = Platform(-1000, 275, 5000, 200,os.path.join('images','block0.png'))
         platform_list.add(block) #after each block
 
         return platform_list #at end of function level1
+
+    def loot1():
+        #create loot 1
+        loot_list = pygame.sprite.Group()
+        cash = Platform(100, 200, 256, 256,os.path.join('images','loot.png'))
+        loot_list.add(cash) #after each cash
+
+        return loot_list #at end of function level1
         
 '''SETUP'''
 # code runs once
@@ -165,7 +173,7 @@ clock = pygame.time.Clock()
 pygame.init()
 pygame.font.init() #start free type
 
-font_path= os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts', 'Lemon.ttf')
+font_path= os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts', 'Lemon-Regular.ttf')
 font_size = 64
 myfont = pygame.font.Font(font_path, font_size)
 main = True
@@ -175,6 +183,7 @@ backdrop = pygame.image.load(os.path.join('images','stage.png')).convert()
 backdropRect = screen.get_rect()
 
 platform_list = Platform.level1() #set stage to level 1
+loot_list = Platform.loot1() #set loot to level 1
 
 player = Player() #spawn player
 player.rect.x = 0
@@ -232,6 +241,8 @@ while main == True:
             platform.rect.x -= scroll
         for enemy in enemy_list:
             enemy.rect.x -= scroll
+        for loot in loot_list:
+            loot.rect.x -= scroll
 
     #scroll world backward
     if player.rect.x <= backwardX:
@@ -240,13 +251,16 @@ while main == True:
         for platform in platform_list:
             platform.rect.x += scroll
         for enemy in enemy_list:
-            enemy.rect.x += scroll
+            enemy.rect.x -= scroll
+        for loot in loot_list:
+            loot.rect.x -= scroll
                 
     screen.blit(backdrop, backdropRect)
 
     platform_list.draw(screen) #draw platforms on screen
+    loot_list.draw(screen) #draw cash on screen
     player.gravity()#check gravity
-    player.update(enemy_list, platform_list) #update player postion
+    player.update(enemy_list, platform_list, loot_list) #update player postion
     movingsprites.draw(screen) #draw player
 
     enemy_list.draw(screen) #refresh enemies
