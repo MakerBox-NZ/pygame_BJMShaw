@@ -1,5 +1,5 @@
 #By BJMShaw
-#Thankes to (No one yet)
+#Thankes to Jess and Seth
 import pygame # load pygame keywords
 import os # let python use your file system
 import sys # help python identify
