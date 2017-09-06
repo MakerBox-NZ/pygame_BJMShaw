@@ -5,14 +5,14 @@ import os # let python use your file system
 import sys # help python identify
 import pygame.freetype#load fonts
 import random #loot change louction
-
 '''OBJECTS'''
 # put classes & functions here
-
-def stats(score):
+def stats(score, score2):
     #display text, 1, colo(u)r (rgb)
-    text_score = myfont.render('Sc0re: '+str(score), 1, (250,147,248))
+    text_score = myfont.render('Health: '+str(score), 1, (250,147,248))
+    text2_score = myfont.render('Score '+str(score2), 1, (250,147,248))
     screen.blit(text_score, (4, 4))
+    screen.blit(text2_score, (500, 4))
 
 class Player(pygame.sprite.Sprite):
     #spawn player
@@ -26,7 +26,8 @@ class Player(pygame.sprite.Sprite):
         self.collide_delta = 0
         self.jump_delta = 6
 
-        self.score = 0 #set score
+        self.score = 100#set health
+        self.score2 = 1#set score
         self.damage = 0#player is hit
         
         self.images = [ ]
@@ -64,10 +65,20 @@ class Player(pygame.sprite.Sprite):
         enemy_hit_list = pygame.sprite.spritecollide(self, enemy_list, False)
         loot_hit_list = pygame.sprite.spritecollide(self, loot_list, False)
         for loot in loot_hit_list:
-            self.score += 1
+            self.score = 100
             print(self.score)
-            loot_list.remove(loot)
+            loot.rect.x = random.randint(0,900)
+            #loot_list.remove(loot)     
             #cash = Platform(random.randint(0,1000), 100, 256, 256,os.path.join('images','loot.png'))
+
+        loot2_hit_list = pygame.sprite.spritecollide(self, loot2_list, False)
+        for loot2 in loot2_hit_list:
+            self.score2 += 1
+            print(self.score)
+            loot2.rect.x = random.randint(0,200)
+            #loot_list.remove(loot)     
+            #cash = Platform(random.randint(0,1000), 100, 256, 256,os.path.join('images','loot.png'))
+
             
 
         if self.damage == 0:
@@ -134,6 +145,32 @@ class Enemy(pygame.sprite.Sprite):
 
         self.counter += 1
 
+class Enemy2(pygame.sprite.Sprite):
+    #spawn an enemy
+    def __init__(self,x,y,img):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(os.path.join('images', img))
+        self.image.convert_alpha()
+        self.image.set_colorkey(alpha)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.counter = 0 #counter variable
+
+    def move(self):
+        #enemy movement
+        if self.counter >= 0 and self.counter <= 30:
+            self.rect.x += 2
+        elif self.counter >= 30 and self.counter <= 60:
+            self.rect.x -= 2
+        else:
+            self.counter = 0
+            print('reset')
+
+        self.counter += 1
+
+
+
 class Platform (pygame.sprite.Sprite):
     #x location, y location, img width, img height, img file
     def __init__(self, xloc, yloc, imgw, imgh, img):
@@ -160,13 +197,23 @@ class Platform (pygame.sprite.Sprite):
     def loot1():
         #create loot 1
         loot_list = pygame.sprite.Group()
-        cash = Platform(990, 150, 256, 256,os.path.join('images','loot.png'))
+        cash = Platform(500, 150, 256, 256,os.path.join('images','health.png'))
         loot_list.add(cash) #after each cash
 
         return loot_list #at end of function level1
+
+    def loot2():
+        #create loot 2
+        loot2_list = pygame.sprite.Group()
+        cash2 = Platform(600, 150, 256, 256,os.path.join('images','loot.png'))
+        loot2_list.add(cash2) #after each cash
+
+        return loot2_list #at end of function level1
         
 '''SETUP'''
 # code runs once
+score = 100
+
 screenX = 960 #width
 screenY = 720 #height
 
@@ -191,6 +238,7 @@ backdropRect = screen.get_rect()
 
 platform_list = Platform.level1() #set stage to level 1
 loot_list = Platform.loot1() #set loot to level 1
+loot2_list = Platform.loot2() #set loot to level 2
 
 player = Player() #spawn player
 player.rect.x = 0
@@ -206,6 +254,10 @@ backwardX = 150 #when to scroll
 enemy = Enemy(200,95, 'enemy.png') #spawn enemy
 enemy_list = pygame.sprite.Group() #create enemy group
 enemy_list.add(enemy) #add enemy to group
+
+enemy2 = Enemy2(200,95, 'enemy.png') #spawn enemy
+enemy2_list = pygame.sprite.Group() #create enemy group
+enemy2_list.add(enemy2) #add enemy to group
 '''enemy = Enemy(500,250, 'enemy2.png') #spawn enemy
 enemy_list = pygame.sprite.Group() #create enemy group
 enemy_list.add(enemy) #add enemy to group'''
@@ -248,6 +300,8 @@ while main == True:
             platform.rect.x -= scroll
         for enemy in enemy_list:
             enemy.rect.x -= scroll
+        for enemy2 in enemy_list:
+            enemy2.rect.x -= scroll
         for loot in loot_list:
             loot.rect.x -= scroll
 
@@ -258,9 +312,9 @@ while main == True:
         for platform in platform_list:
             platform.rect.x += scroll
         for enemy in enemy_list:
-            enemy.rect.x -= scroll
+            enemy.rect.x += scroll
         for loot in loot_list:
-            loot.rect.x -= scroll
+            loot.rect.x += scroll
                 
     screen.blit(backdrop, backdropRect)
 
@@ -273,7 +327,7 @@ while main == True:
     enemy_list.draw(screen) #refresh enemies
     enemy.move() # move enemy sprite
 
-    stats(player.score) #draw text
+    stats(player.score, player.score2) #draw text
     
     pygame.display.flip()
     clock.tick(fps)
