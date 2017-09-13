@@ -170,10 +170,10 @@ class Enemy2(pygame.sprite.Sprite):
 
     def move(self):
         #enemy movement
-        if self.counter >= 0 and self.counter <= 30:
+        if self.counter >= 10 and self.counter <= 50:
             self.rect.x += 2
-        elif self.counter >= 30 and self.counter <= 60:
-            self.rect.x -= 2
+        elif self.counter >= 30 and self.counter <= 100:
+            self.rect.x -= 3
         else:
             self.counter = 0
             print('reset')
@@ -193,7 +193,6 @@ class Platform (pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.y = yloc
         self.rect.x = xloc
-
         #paint image into blocks
         self.image.blit(self.blockpic, (0,0), (0,0,imgw,imgh))
     
@@ -262,7 +261,7 @@ forwardX = 600 #when to scroll
 backwardX = 150 #when to scroll
 
 #enemy code
-enemy = Enemy(200,95, 'enemy.png') #spawn enemy
+enemy = Enemy(500,95, 'enemy.png') #spawn enemy
 enemy_list = pygame.sprite.Group() #create enemy group
 enemy_list.add(enemy) #add enemy to group
 
