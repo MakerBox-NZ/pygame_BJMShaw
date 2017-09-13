@@ -1,6 +1,6 @@
 #By BJMShaw
 
-'''there is a score bug'''#<----------------------------------------------------read
+'''I am working on throwing.                '''#<----------------------------------------------------read
 
 #Thankes to Jess and Seth
 import pygame # load pygame keywords
@@ -283,7 +283,7 @@ while main == True:
             if event.key == pygame.K_LEFT:
                 print('left stop')
                 player.control(movesteps, 0)
-            if event.key == pygame.K_RIGHT:
+            if event.key ==pygame.K_RIGHT:
                 print('right stop')
                 player.control(-movesteps, 0)
             if event.key == pygame.K_UP:
