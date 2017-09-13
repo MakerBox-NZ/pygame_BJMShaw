@@ -1,4 +1,7 @@
 #By BJMShaw
+
+'''there is a score bug'''#<----------------------------------------------------read
+
 #Thankes to Jess and Seth
 import pygame # load pygame keywords
 import os # let python use your file system
@@ -7,11 +10,11 @@ import pygame.freetype#load fonts
 import random #loot change louction
 '''OBJECTS'''
 # put classes & functions here
-def stats(score, score2):
+def stats(health, score2):
     #display text, 1, colo(u)r (rgb)
-    text_score = myfont.render('Health: '+str(score), 1, (250,147,248))
-    text2_score = myfont.render('Score '+str(score2), 1, (250,147,248))
-    screen.blit(text_score, (4, 4))
+    text_health = myfont.render('Health: '+str(health), 1, (250,147,248))
+    text2_score = myfont.render('Sc0re '+str(score2), 1, (250,147,248))
+    screen.blit(text_health, (4, 4))
     screen.blit(text2_score, (500, 4))
 
 class Player(pygame.sprite.Sprite):
@@ -26,7 +29,7 @@ class Player(pygame.sprite.Sprite):
         self.collide_delta = 0
         self.jump_delta = 6
 
-        self.score = 100#set health
+        self.health = 100#set health
         self.score2 = 1#set score
         self.damage = 0#player is hit
         
@@ -64,20 +67,28 @@ class Player(pygame.sprite.Sprite):
         #collistions
         enemy_hit_list = pygame.sprite.spritecollide(self, enemy_list, False)
         loot_hit_list = pygame.sprite.spritecollide(self, loot_list, False)
-        for loot in loot_hit_list:
-            self.score = 100
-            print(self.score)
+        '''for loot in loot_hit_list:
+            self.health = 100
+            print(self.health)
             loot.rect.x = random.randint(0,900)
             #loot_list.remove(loot)     
             #cash = Platform(random.randint(0,1000), 100, 256, 256,os.path.join('images','loot.png'))
+            loot_hit_list = pygame.sprite.spritecollide(self, loot_list, False)'''
+        for loot in loot_hit_list:
+            self.health = 100
+            loot.rect.x = random.randint(0,900)
+            loot_list.remove(loot)
+            cash = Platform(random.randint(0,1000), 100, 256, 256,os.path.join('images','health.png')) # generate new loot
+            loot_list.add(cash) #add new loot to loot_list
 
         loot2_hit_list = pygame.sprite.spritecollide(self, loot2_list, False)
         for loot2 in loot2_hit_list:
             self.score2 += 1
-            print(self.score)
+            print(self.score2)
             loot2.rect.x = random.randint(0,200)
-            #loot_list.remove(loot)     
-            #cash = Platform(random.randint(0,1000), 100, 256, 256,os.path.join('images','loot.png'))
+            loot2_list.remove(loot2)     
+            cash = Platform(random.randint(0,1000), 100, 256, 256,os.path.join('images','loot.png'))
+            loot2_list.add(cash) #add new loot to loot_list
 
             
 
@@ -85,13 +96,13 @@ class Player(pygame.sprite.Sprite):
             for enemy in enemy_hit_list:
                 if not self.rect.contains(enemy):
                     self.damage = self.rect.colliderect(enemy)
-                    print(self.score)
+                    print(self.health)
 
         if self.damage == 1:
             idx = self.rect.collidelist(enemy_hit_list)
             if idx == -1:
                 self.damage = 0 #set damage back to 0
-                self.score -= 1#sudtract 1 hp
+                self.health -= 1#sudtract 1 hp
 
         
 
@@ -205,14 +216,14 @@ class Platform (pygame.sprite.Sprite):
     def loot2():
         #create loot 2
         loot2_list = pygame.sprite.Group()
-        cash2 = Platform(600, 150, 256, 256,os.path.join('images','loot.png'))
+        cash2 = Platform(1000, 150, 256, 256,os.path.join('images','loot.png'))
         loot2_list.add(cash2) #after each cash
 
         return loot2_list #at end of function level1
         
 '''SETUP'''
 # code runs once
-score = 100
+health = 100
 
 screenX = 960 #width
 screenY = 720 #height
@@ -255,12 +266,9 @@ enemy = Enemy(200,95, 'enemy.png') #spawn enemy
 enemy_list = pygame.sprite.Group() #create enemy group
 enemy_list.add(enemy) #add enemy to group
 
-enemy2 = Enemy2(200,95, 'enemy.png') #spawn enemy
+enemy2 = Enemy(0,95, 'enemy.png') #spawn enemy
 enemy2_list = pygame.sprite.Group() #create enemy group
 enemy2_list.add(enemy2) #add enemy to group
-'''enemy = Enemy(500,250, 'enemy2.png') #spawn enemy
-enemy_list = pygame.sprite.Group() #create enemy group
-enemy_list.add(enemy) #add enemy to group'''
 
 '''MAIN LOOP'''
 # code runs many times
@@ -320,6 +328,7 @@ while main == True:
 
     platform_list.draw(screen) #draw platforms on screen
     loot_list.draw(screen) #draw cash on screen
+    loot2_list.draw(screen) #draw cash on screen
     player.gravity()#check gravity
     player.update(enemy_list, platform_list, loot_list) #update player postion
     movingsprites.draw(screen) #draw player
@@ -327,7 +336,7 @@ while main == True:
     enemy_list.draw(screen) #refresh enemies
     enemy.move() # move enemy sprite
 
-    stats(player.score, player.score2) #draw text
+    stats(player.health, player.score2) #draw text
     
     pygame.display.flip()
     clock.tick(fps)
