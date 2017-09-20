@@ -1,6 +1,6 @@
 #By BJMShaw
 
-'''I am working on throwing.                '''#<----------------------------------------------------read
+'''I am working on throwing.                '''#<----------------------------------------------------read                 F5 TO PLAY    
 
 #Thankes to Jess and Seth
 import pygame # load pygame keywords
@@ -235,6 +235,7 @@ class Throwable(pygame.sprite.Sprite):
         self.image.set_colorkey(alpha)
         self.rect = self.image.get_rect()
         self.rect.x = x
+
         self.rect.y = y
         self.firing = throw
 
