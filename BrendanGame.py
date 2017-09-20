@@ -156,6 +156,12 @@ class Enemy(pygame.sprite.Sprite):
 
         self.counter += 1
 
+    def update(self,firepower, enemy_list):
+        #detect firepower collision
+        fire_hit_list = pygame.sprite.spritecollide(self,firepower,False)
+        for fire in fire_hit_list:
+            enemy_list.remove(self)
+
 class Enemy2(pygame.sprite.Sprite):
     #spawn an enemy
     def __init__(self,x,y,img):
@@ -219,6 +225,28 @@ class Platform (pygame.sprite.Sprite):
         loot2_list.add(cash2) #after each cash
 
         return loot2_list #at end of function level1
+
+class Throwable(pygame.sprite.Sprite):
+    #Spawn a throwable object
+    def __init__(self,x,y,img,throw):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(os.path.join('images',img))
+        self.image.convert_alpha()
+        self.image.set_colorkey(alpha)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.firing = throw
+
+    def update(self,screenY):
+        #throw physics
+        if self.rect.y < screenY:#vertical axis
+            self.rect.x += 15 #how fast it moves forward
+            self.rect.y += 2.5 #how fast it falls
+        else:
+            self.kill() #remove throwable object
+            self.firing = 0 #free up firing slot
+            enemy_list.update(firepower,enemy_list) #update enemy
         
 '''SETUP'''
 # code runs once
@@ -255,6 +283,8 @@ player.rect.x = 0
 player.rect.y = 90
 movingsprites = pygame.sprite.Group()
 movingsprites.add(player)
+fire = Throwable(player.rect.x,player.rect.y,'fire.png',0)
+firepower = pygame.sprite.Group()
 movesteps = 10 #how fast to move
 
 forwardX = 600 #when to scroll
@@ -282,11 +312,15 @@ while main == True:
             if event.key == pygame.K_LEFT:
                 print('left stop')
                 player.control(movesteps, 0)
-            if event.key ==pygame.K_RIGHT:
+            if event.key == pygame.K_RIGHT:
                 print('right stop')
                 player.control(-movesteps, 0)
             if event.key == pygame.K_UP:
                 print('up stop')
+            if event.key == pygame.K_SPACE:
+                if not fire.firing:
+                    fire = Throwable(player.rect.x,player.rect.y,'fire.png',1)
+                    firepower.add(fire)
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
@@ -331,6 +365,10 @@ while main == True:
     player.gravity()#check gravity
     player.update(enemy_list, platform_list, loot_list) #update player postion
     movingsprites.draw(screen) #draw player
+
+    if fire.firing:
+        fire.update(screenY)
+        firepower.draw(screen)
 
     enemy_list.draw(screen) #refresh enemies
     enemy.move() # move enemy sprite
